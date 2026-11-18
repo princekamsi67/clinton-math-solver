@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#101827">
+<title>Clinton Math — AI Mathematics Solver</title>
+<style>
+:root{--bg:#f4f7fb;--panel:#fff;--text:#172033;--muted:#68758b;--line:#dfe6ef;--accent:#635bff;--accent2:#4b43df;--soft:#eeedff;--shadow:0 12px 35px #18233a12}
+[data-theme="dark"]{--bg:#0c1220;--panel:#141e30;--text:#edf2ff;--muted:#a4b0c5;--line:#29364b;--accent:#918bff;--accent2:#7770f4;--soft:#28264d;--shadow:0 12px 35px #0005}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{display:flex;align-items:center;justify-content:space-between;padding:16px max(18px,calc((100% - 1050px)/2));background:var(--panel);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+.brand{display:flex;gap:11px;align-items:center;font-weight:800;font-size:19px}.logo{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#756dff,#3930c9);display:grid;place-items:center;color:white;font-weight:900}
+.header-actions{display:flex;gap:8px}button,select{font:inherit}button{cursor:pointer;border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:10px;padding:9px 12px}button:hover{border-color:var(--accent)}.wrap{max-width:920px;margin:36px auto;padding:0 16px}
+.hero{text-align:center;margin-bottom:25px}.eyebrow{color:var(--accent);font-weight:750;letter-spacing:.12em;text-transform:uppercase;font-size:11px}.hero h1{font-size:clamp(30px,6vw,46px);line-height:1.1;margin:8px 0}.hero p{color:var(--muted);margin:0}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:18px;margin-bottom:16px}
+.labelrow{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:9px;font-weight:700}.hint{font-size:12px;color:var(--muted);font-weight:400}
+textarea{width:100%;min-height:105px;resize:vertical;background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:14px;color:var(--text);font:18px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;outline:none}
+textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 15%,transparent)}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.primary{background:var(--accent);border-color:var(--accent);color:white;font-weight:750;padding:12px 18px}.primary:hover{background:var(--accent2);border-color:var(--accent2)}.wide{width:100%;margin-top:13px}
+.tabs{display:flex;gap:7px;overflow:auto;padding:2px 0 10px}.tab{white-space:nowrap;font-size:13px}.tab.active{background:var(--soft);border-color:var(--accent);color:var(--accent);font-weight:700}
+.keys{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:7px}.key{padding:10px 4px;font-weight:650;font-size:15px;background:var(--bg);border-color:var(--line);min-height:42px}.key:active{transform:scale(.97);background:var(--soft)}
+.solution{white-space:pre-wrap;overflow-wrap:anywhere}.solution h3{margin:12px 0 5px}.answer{background:var(--soft);border:1px solid color-mix(in srgb,var(--accent) 30%,var(--line));border-radius:12px;padding:13px;font-weight:750}
+.status{color:var(--muted);font-size:13px;margin-top:10px}.examples{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}.example{font-size:12px;color:var(--muted);padding:6px 9px}
+.history-item{padding:10px 0;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:12px}.history-item:last-child{border:0}.history-q{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:75%}
+footer{text-align:center;color:var(--muted);font-size:12px;padding:20px}
+@media(max-width:560px){.wrap{margin:22px auto}.panel{padding:14px}.keys{grid-template-columns:repeat(5,minmax(0,1fr))}.hero p{font-size:14px}header{padding:12px 15px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><div class="logo">C</div> Clinton Math</div>
+  <div class="header-actions"><button id="themeBtn" aria-label="Toggle theme">☾</button><button id="clearBtn">Clear</button></div>
+</header>
+<main class="wrap">
+  <section class="hero">
+    <div class="eyebrow">Your intelligent maths assistant</div>
+    <h1>Maths made <span style="color:var(--accent)">clear.</span></h1>
+    <p>Enter a question, use the maths keyboard, and learn it step by step.</p>
+  </section>
+
+  <section class="panel">
+    <div class="labelrow"><span>Your maths question</span><span class="hint">Text or expression</span></div>
+    <textarea id="question" placeholder="Example: Solve 2x + 5 = 17"></textarea>
+    <div class="toolbar">
+      <button id="backspace">⌫ Backspace</button><button id="space">Space</button><button id="uploadBtn">📷 Add image</button>
+      <input id="imageInput" type="file" accept="image/*" hidden>
+    </div>
+    <div class="examples">
+      <button class="example" data-q="Solve 2x + 5 = 17">2x + 5 = 17</button>
+      <button class="example" data-q="Factorise x^2 + 5x + 6">Factorise x² + 5x + 6</button>
+      <button class="example" data-q="Find the derivative of 3x^2 + 4x">Derivative</button>
+    </div>
+    <div class="labelrow" style="margin-top:18px"><span>Mathematical keyboard</span><span class="hint">Tap a key to insert it</span></div>
+    <div class="tabs" id="tabs"></div>
+    <div class="keys" id="keys"></div>
+    <button class="primary wide" id="solveBtn">✦ Solve with Clinton Math</button>
+    <div class="status" id="status">Tip: For powers, type ^ (example: x^2). For fractions, use (a)/(b).</div>
+  </section>
+
+  <section class="panel" id="solutionPanel">
+    <div class="labelrow"><span>Solution</span><button id="copyBtn">Copy</button></div>
+    <div id="solution" class="solution" style="color:var(--muted)">Your worked solution will appear here, with the method and steps explained.</div>
+  </section>
+
+  <section class="panel">
+    <div class="labelrow"><span>Recent questions</span><button id="historyClear">Clear history</button></div>
+    <div id="history" class="hint">No questions yet.</div>
+  </section>
+  <footer>Clinton Math • Learn the method, not just the answer.</footer>
+</main>
+<script>
+const groups = {
+ Basic:["+","−","×","÷","=","≠","±","%","(",")","[","]",".",",","<",">","≤","≥"],
+ Algebra:["x","y","z","a","b","c","f(x)","|x|","∞","∝","^","_","→","∴","∵"],
+ Fractions:["a/b","( )/( )","√","∛","x²","x³","xⁿ","1/x","|x|","⌊x⌋","⌈x⌉"],
+ Trigonometry:["sin","cos","tan","cot","sec","cosec","sin⁻¹","cos⁻¹","tan⁻¹","θ","°"],
+ Calculus:["∫","∮","d/dx","dy/dx","∂","∇","Δ","lim","dx","Σ","∏"],
+ Greek:["π","e","i","α","β","γ","λ","μ","Ω","φ","θ","σ"],
+ Sets:["∈","∉","⊂","⊆","∪","∩","∅","∀","∃","∧","∨"],
+ Geometry:["∠","△","⊥","∥","≅","≈","°","π","cm","m","km"],
+ Logs:["log","ln","log₂","log₁₀","exp","!"]
+};
+const tabs=document.getElementById('tabs'), keys=document.getElementById('keys'), input=document.getElementById('question');
+function renderKeyboard(group){tabs.innerHTML='';Object.keys(groups).forEach(name=>{const b=document.createElement('button');b.className='tab'+(name===group?' active':'');b.textContent=name;b.onclick=()=>renderKeyboard(name);tabs.appendChild(b)});keys.innerHTML='';groups[group].forEach(symbol=>{const b=document.createElement('button');b.className='key';b.textContent=symbol;b.onclick=()=>insertSymbol(symbol);keys.appendChild(b)})}
+function insertSymbol(s){const map={"×":"*","÷":"/","−":"-","a/b":"(a)/(b)","( )/( )":"( )/( )","√":"sqrt()","∛":"cbrt()","x²":"^2","x³":"^3","xⁿ":"^","π":"pi","∫":"integral()","Σ":"sum()","≤":"<=","≥":">=","≠":"!=","θ":"theta","∞":"infinity","∠":"angle","°":" degrees"};const v=map[s]??s;const start=input.selectionStart,end=input.selectionEnd;input.setRangeText(v,start,end,'end');input.focus()}
+renderKeyboard('Basic');
+document.getElementById('backspace').onclick=()=>{const s=input.selectionStart,e=input.selectionEnd;if(s!==e)input.setRangeText('',s,e,'end');else if(s>0)input.setRangeText('',s-1,s,'end');input.focus()};
+document.getElementById('space').onclick=()=>insertSymbol(' ');
+document.getElementById('clearBtn').onclick=()=>{input.value='';input.focus()};
+document.getElementById('themeBtn').onclick=()=>{const d=document.documentElement;d.dataset.theme=d.dataset.theme==='dark'?'light':'dark';document.getElementById('themeBtn').textContent=d.dataset.theme==='dark'?'☀':'☾'};
+document.querySelectorAll('.example').forEach(b=>b.onclick=()=>{input.value=b.dataset.q;input.focus()});
+let attachedImage=null;
+document.getElementById('uploadBtn').onclick=()=>document.getElementById('imageInput').click();
+document.getElementById('imageInput').onchange=e=>{attachedImage=e.target.files[0]||null;document.getElementById('status').textContent=attachedImage?'Image selected: '+attachedImage.name+' (image solving needs vision support on the server).':'No image selected.'};
+let historyItems=[];
+function addHistory(q){historyItems.unshift(q);historyItems=historyItems.slice(0,8);renderHistory()}
+function renderHistory(){const h=document.getElementById('history');h.innerHTML='';if(!historyItems.length){h.textContent='No questions yet.';return}historyItems.forEach(q=>{const d=document.createElement('div');d.className='history-item';const s=document.createElement('span');s.className='history-q';s.textContent=q;const b=document.createElement('button');b.textContent='Reuse';b.onclick=()=>{input.value=q;input.focus()};d.append(s,b);h.append(d)})}
+document.getElementById('historyClear').onclick=()=>{historyItems=[];renderHistory()};
+document.getElementById('copyBtn').onclick=async()=>{const t=document.getElementById('solution').innerText;try{await navigator.clipboard.writeText(t);document.getElementById('status').textContent='Solution copied.'}catch{document.getElementById('status').textContent='Copy is not available in this browser.'}};
+document.getElementById('solveBtn').onclick=async()=>{
+ const q=input.value.trim(),status=document.getElementById('status'),out=document.getElementById('solution'),btn=document.getElementById('solveBtn');
+ if(!q&&!attachedImage){status.textContent='Please enter a maths question first.';return}
+ btn.disabled=true;btn.textContent='Solving…';status.textContent='Working through your question…';out.textContent='';
+ try{
+   const form=new FormData();form.append('question',q);if(attachedImage)form.append('image',attachedImage);
+   const response=await fetch('/api/solve',{method:'POST',body:form});
+   const data=await response.json();
+   if(!response.ok)throw new Error(data.error||'The solver could not process this question.');
+   out.textContent=data.solution||'No solution was returned.';out.style.color='var(--text)';status.textContent='Solution ready.';if(q)addHistory(q);attachedImage=null;document.getElementById('imageInput').value='';
+ }catch(err){out.textContent='Could not connect to the AI solver.\n\n'+err.message+'\n\nMake sure the server is running and your API key is configured. The website interface works, but AI solving requires the server setup in the README.';out.style.color='var(--muted)';status.textContent='Connection or setup problem.'}
+ finally{btn.disabled=false;btn.textContent='✦ Solve with Clinton Math'}
+};
+</script>
+</body>
+</html>
